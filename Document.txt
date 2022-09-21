@@ -1,5 +1,16 @@
 ﻿Module
-- Tạo Tài Khoản
++ Tạo Tài Khoản
+  - ID
+  - Displayname
+  - Username
+  - password
+  - Bod
+  - Sex
+  - Address
+  - Phone
+  - Email
+
+
 - Đăng bài
 - bình luận
 - Bài viết đã thích 
