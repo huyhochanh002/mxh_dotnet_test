@@ -7,16 +7,15 @@
 
 
 
-
-
         public Guid AuthorId { get; set; }
         public User Author { get; set; }
 
 
-        public Guid GroupId { get; set; }
+        public Guid? GroupId { get; set; }
         public Group Group { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<User> Likers { get; set; }
+        public ICollection<PostLiker> PostLikers { get; set; }
+
     }
 }

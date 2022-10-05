@@ -9,5 +9,7 @@
         public ICollection<UserGroup> UsersInGroup { get; set; }
 
         public ICollection<Post> Posts { get; set; }
+
+
     }
 }

@@ -14,8 +14,12 @@
 
         public ICollection<Post> Posts { get; set; }
      
-        public ICollection<UserGroup> UserOfGroups { get; set; }
+        public ICollection<UserGroup> UserGroups { get; set; }
 
+        public ICollection<Comment> Comments { get; set; }
+
+        public ICollection<PostLiker> PostLikers { get; set; }
+        
 
 
     }
