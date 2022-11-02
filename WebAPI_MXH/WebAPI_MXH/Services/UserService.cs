@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI_MXH.Data;
+using WebAPI_MXH.DTO;
 using WebAPI_MXH.models;
 
 namespace WebAPI_MXH.Services
 {
     public class UserService
     {
+        //inject
         private readonly AppDBContext _context;
         public UserService(AppDBContext appDBContext)
         {
@@ -13,7 +15,7 @@ namespace WebAPI_MXH.Services
         }
 
         // add user 
-        public async Task<bool> AddUser(User user)
+        public async Task<ApiResult<bool>> AddUser(User user)
         {
             try {
                 var userExist = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
@@ -21,62 +23,118 @@ namespace WebAPI_MXH.Services
                 {
                     await _context.Users.AddAsync(user);
                     await _context.SaveChangesAsync();
-                    return true;
+                    return new ApiResult<bool>()
+                    {
+                        data = true,
+                        IsSussces = true
+
+                    };
                 }
                 throw new Exception("Email Đã Tồn Tại !");
-                return false;
             }
             catch(Exception e)
             {
-                return false;
+                return new ApiResult<bool>()
+                {
+                    
+                    IsSussces = false,
+                    Errormessge="Lỗi nhập "
+
+                };
             }
         }
         // Chỉnh sữa user
-        public async Task<bool> UpdateUser( Guid Id,User user)
+        public async Task<ApiResult<bool>> UpdateUser( /*Guid Id,*/CreateUserDto userdto)
         {
-            var userExist = await _context.Users.FirstOrDefaultAsync(u =>u.Id == Id);
+            var userExist = await _context.Users.FirstOrDefaultAsync(u=>u.Email==userdto.Email);
             if(userExist == null)
             {
-                return false;
+                return new ApiResult<bool>()
+                {
+
+                    IsSussces = false,
+                    Errormessge = "User không tồn tại "
+
+                };
             }
-            userExist.DisplayName= user.DisplayName;
-            userExist.Email= user.Email;
-            userExist.Address= user.Address;
-            userExist.DateOfBirth= user.DateOfBirth;
+            userExist.DisplayName= userdto.DisplayName;
+            //userExist.Email= userdto.Email; // mail này giữ nguyên
+            userExist.Phone= userdto.Phone;
+            userExist.Address= userdto.Address;
+            userExist.DateOfBirth= userdto.DateOfBirth;
             await _context.SaveChangesAsync();
-            return true;
-     
+            return new ApiResult<bool>()
+            {
+                data=true,
+                IsSussces = false
+                
+
+            };
+
         }
-        public async Task<bool> DeleteUSer(Guid Id, User user)
+        // Xóa User
+        public async Task<ApiResult<bool>> DeleteUSer(Guid Id)
         {
             var userExist = await _context.Users.FirstOrDefaultAsync(u => u.Id == Id);
             if (userExist==null)
             {
-                return false;
+                return new ApiResult<bool>()
+                {
+
+                    IsSussces = false,
+                    Errormessge = "User Không Tồn tại"
+
+                };
             }
             else
             {
                  _context.Users.Remove(userExist);
                 await _context.SaveChangesAsync();
-                return true;
+                return new ApiResult<bool>()
+                {
+                    data = true,
+                    IsSussces = true,
+                   
+
+                };
             }
         }
         // GET ALL
-        public async Task<List<User>> GetAllUser()
+        public async Task<ApiResult<List<User>>> GetAllUser()
         {
-            return await _context.Users.AsNoTracking().ToListAsync();
- 
+            var listuser = await _context.Users.AsNoTracking().ToListAsync();
+            return new ApiResult<List<User>>()
+            {
+                data = listuser,
+                IsSussces = true
+               
+            };
+
         }
 
-        public async Task<User> FindByEmail(string email)
+        public async Task<ApiResult<User>> FindByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            
+            var userbyemail = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return new ApiResult<User>()
+            {
+                data = userbyemail,
+                IsSussces = true
 
+            };
         }
 
-        public async Task<User> FindById(Guid id)
+        public async Task<ApiResult<User>> FindById(Guid id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+          
+
+            var userbyid = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return new ApiResult<User>()
+            {
+                data = userbyid,
+                IsSussces = true
+
+            };
 
         }
 

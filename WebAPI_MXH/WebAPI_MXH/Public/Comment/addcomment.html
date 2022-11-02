@@ -1,0 +1,56 @@
+﻿<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<h1>Create Comement </h1>
+<form id="form1">
+    <div>
+        <label for="Title">Title</label>
+    </div>
+    <div>
+        <input name="Title" type="text" />
+    </div>
+    <div>
+        <label for="Content">Content</label>
+    </div>
+    <div>
+        <input name="Content" type="text" />
+    </div>
+    <div>
+        <label for="AuthorId">AuthorId</label>
+    </div>
+    <div>
+        <input name="AuthorId" type="text" />
+    </div>
+    <div>
+        <label for="PostId">PostId</label>
+    </div>
+    <div>
+        <input name="PostId" type="text" />
+    </div>
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+</form>
+<script type="text/javascript">
+    $("#form1").submit(function (e) {
+        e.preventDefault();
+        const temp = $('#form1').serializeArray().reduce((acc, curr) => {
+            acc[curr["name"]] = curr['value']
+            return acc;
+        }, {})
+
+
+        console.log(temp)
+        $.ajax({
+            url: 'https://localhost:7061/api/Comment',
+            data: JSON.stringify(temp),
+            type: 'post',
+            dataType: "json" ,
+            contentType:'application/json',
+            success: function (result) {
+                console.log(result)
+            }
+
+        })
+    });
+</script>

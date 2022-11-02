@@ -15,6 +15,18 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 
 // scope nè nhớ nha má  
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<GroupService>();
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("app", build =>
+    {
+        build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 
 
 
@@ -31,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("app");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

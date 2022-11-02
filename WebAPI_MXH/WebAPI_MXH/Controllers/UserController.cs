@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebAPI_MXH.DTO;
 using WebAPI_MXH.models;
 using WebAPI_MXH.Services;
 
@@ -6,9 +7,9 @@ namespace WebAPI_MXH.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController:ControllerBase
+    public class UserController : ControllerBase
     {
-       
+
         private readonly UserService _userservice;
         public UserController(UserService userService)
         {
@@ -22,32 +23,54 @@ namespace WebAPI_MXH.Controllers
 
             return Ok(users);
         }
-        [HttpPost]
-        public async Task<IActionResult> CreateUser(User user)
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserByID([FromQuery]  Guid id)
         {
-            var emailExist = await _userservice.FindByEmail(user.Email);
-            if(emailExist == null)
+            var userExist = await _userservice.FindById(id);
+            if (userExist == null)
             {
-                var result = await _userservice.AddUser(user);
+                return NotFound("User không tồn tại ");
+            }
+            return Ok(userExist);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userdto)
+        {
+     
+            try
+            {
+                User useradd =new User();
+                useradd.DisplayName = userdto.DisplayName;
+                useradd.Email = userdto.Email;
+                useradd.Phone = userdto.Phone;
+                useradd.Address = userdto.Address;
+                useradd.DateOfBirth = userdto.DateOfBirth;
+
+
+                var result = await _userservice.AddUser(useradd);
                 return Ok(result);
             }
-            else
+            catch(Exception e)
             {
-                return BadRequest(new { message = "Email Đã Tồn Tại ! " });
+
             }
+            return BadRequest(new { message = "Email Đã Tồn Tại ! " });
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditUser(User user)
+        public async Task<IActionResult> EditUser(CreateUserDto userdto)
         {
             if (ModelState.IsValid)
             {
-                var userExist = await _userservice.FindById(user.Id);
+                var userExist = await _userservice.FindByEmail(userdto.Email);
                 if (userExist == null)
                 {
                     return NotFound("User không tồn tại");
                 }
-                var result = await _userservice.UpdateUser(user.Id, user);
+                var result = await _userservice.UpdateUser(userdto);
                 return Ok(result);
             }
             else
@@ -56,8 +79,8 @@ namespace WebAPI_MXH.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUserByID([FromQuery] Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser([FromQuery] Guid id)
         {
             var userExist = await _userservice.FindById(id);
             if (userExist == null)
@@ -66,10 +89,12 @@ namespace WebAPI_MXH.Controllers
             }
             else
             {
-                return Ok(userExist);
+                await _userservice.DeleteUSer(id);
             }
-        }
+            return Ok(userExist);
 
+        }
 
     }
 }
+

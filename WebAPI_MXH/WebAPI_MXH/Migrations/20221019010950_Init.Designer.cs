@@ -11,8 +11,8 @@ using WebAPI_MXH.Data;
 namespace WebAPI_MXH.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20221005075631_InitDB")]
-    partial class InitDB
+    [Migration("20221019010950_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

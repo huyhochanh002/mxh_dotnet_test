@@ -1,0 +1,77 @@
+﻿<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<h1>Create User</h1>
+<form id="form1" >
+    <div>
+        <label for="DisplayName">DisplayName</label>
+    </div>
+    <div>
+        <input name="DisplayName" type="text" />
+    </div>
+    <div>
+        <label for="Email">Email</label>
+    </div>
+    <div>
+        <input name="Email" type="text" />
+    </div>
+    <div>
+        <label for="Phone">Phone</label>
+    </div>
+    <div>
+        <input name="Phone" type="text" />
+    </div>
+    <div>
+        <label for="Address">Address</label>
+    </div>
+    <div>
+        <input name="Address" type="text" />
+    </div>
+    <div>
+        <label for="DateOfBirth">DateOfBirth</label>
+    </div>
+    <div>
+        <input name="DateOfBirth" type="text" />
+    </div>
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+</form>
+<script type="text/javascript">
+    $("#form1").submit(function (e) {
+        e.preventDefault();
+        const temp = $('#form1').serializeArray().reduce((acc, curr) => {
+            acc[curr["name"]] = curr['value']
+            return acc;
+        }, {})
+
+
+        console.log(temp)
+        $.ajax({
+            url: 'https://localhost:7061/api/User',
+            data: JSON.stringify(temp),
+            type: 'post',
+            dataType: "json" ,
+            contentType:'application/json',
+            success: function (result) {
+                console.log(result)
+            }
+
+        })
+
+
+
+      //  console.log($('#form1').serializeArray())
+      ///*  $.post('https://localhost:7061/api/User', $('#form1').serialize())*/
+      //  var jqxhr = $.post('https://localhost:7061/api/User', $('#form1').serialize())
+      //      .success(function () {
+      //          var loc = jqxhr.getResponseHeader('Location');
+      //          var a = $('<a/>', { href: loc, text: loc });
+      //          $('#message').html(a);
+      //      })
+      //      .error(function () {
+      //          $('#message').html("Error posting the update.");
+      //      });
+      //  return false;
+    });
+</script>
